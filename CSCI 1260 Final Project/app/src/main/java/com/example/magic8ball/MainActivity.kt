@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,6 +55,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -92,12 +94,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Magic8Ball() {
-    Image(modifier = Modifier.size(100.dp),
-    painter = painterResource(id = R.drawable.eightball),
-    contentDescription = null)
-}
+//@Composable
+//fun Magic8Ball() {
+//    Image(modifier = Modifier.size(100.dp),
+//    painter = painterResource(id = R.drawable.magicball),
+//    contentDescription = null)
+//}
 
 sealed class Screens(
     val route: String,
@@ -119,7 +121,7 @@ sealed class Screens(
 
 @Composable
 fun HomeScreen() {
-    val viewModel = MainActivityViewModel()
+    val viewModel : MainActivityViewModel = viewModel()
 
     var toggleSwitch by remember { mutableStateOf(false) }
 
@@ -127,7 +129,7 @@ fun HomeScreen() {
     Column( horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.DarkGray)
+            .background(color = Color.LightGray)
             .wrapContentSize(Alignment.Center)
     ) {
         Row(
@@ -140,7 +142,7 @@ fun HomeScreen() {
         ) {
           // Laying out whats inside the row
             TextField(value = viewModel.responseModel.question,
-                onValueChange =  { viewModel.questionAsked(it)},
+                onValueChange = { viewModel.questionAsked(it)},
                 label = { Text(text = "Ask me a Question")},
                 singleLine = true,
                 // Hiding the keybord on done
@@ -149,10 +151,28 @@ fun HomeScreen() {
             )
             Column (horizontalAlignment = Alignment.CenterHorizontally){
                 Switch(checked = toggleSwitch, onCheckedChange = {toggleSwitch = it})
-                Text(text = "8 Ball GPT", textAlign = TextAlign.Center)
-
+                Text(text = "Feeling Lucky?", textAlign = TextAlign.Center, color = Color.Black,
+                    modifier = Modifier
+                        .size(64.dp)
+                )
             }
         }
+        Text(text = viewModel.responseModel.response)
+        // Formatting the Magic 8 ball
+        Image(
+            painter = painterResource(id = R.drawable.magicball),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .clickable {
+                    if (toggleSwitch) {
+                        viewModel.askBiasedQuestion(question = viewModel.responseModel.question)
+                    } else {
+                        viewModel.askQuestion()
+                    }
+                }
+        )
     }
 }
 

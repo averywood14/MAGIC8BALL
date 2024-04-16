@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.magic8ball.api.EightBallAPIInstance
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 data class ResponseModel(val question: String = "", val response: String = "")
 class MainActivityViewModel : ViewModel() {
     var responseModel by mutableStateOf(ResponseModel())
-    var myBoolean: Boolean = false
     fun askQuestion() {
         viewModelScope.launch {
             val response = EightBallAPIInstance.api.askQuestion()
@@ -22,8 +22,7 @@ class MainActivityViewModel : ViewModel() {
 
     fun askBiasedQuestion(question: String) {
         viewModelScope.launch {
-            val response = EightBallAPIInstance.api.askBiasedQuestion(question, !myBoolean)
-            myBoolean = myBoolean.not()
+            val response = EightBallAPIInstance.api.askBiasedQuestion(question, Random.nextBoolean())
             responseModel = responseModel.copy(response = response.reading)
         }
     }
