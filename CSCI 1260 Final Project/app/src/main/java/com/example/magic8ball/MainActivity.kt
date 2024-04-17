@@ -62,6 +62,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.magic8ball.compose.BottomBar
+import com.example.magic8ball.compose.NavigationGraph
 import com.example.magic8ball.models.Screens
 import com.example.magic8ball.ui.theme.Magic8BallTheme
 
@@ -179,60 +181,4 @@ fun PreviousQuestions() {
     }
 }
 
-// Used this source to create the bottom bar
-// https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
-@Composable
-fun NavigationGraph(navController: NavHostController) {
-    NavHost(navController, startDestination = Screens.HomeScreen.route) {
-        composable(Screens.HomeScreen.route) {
-            HomeScreen()
-        }
-        composable(Screens.PreviousQuestionsScreen.route) {
-            PreviousQuestions()
-        }
-    }
-}
-// Used this source to create the bottom bar
-// https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
-@Composable
-fun BottomBar(
-    navController: NavHostController, state: MutableState<Boolean>, modifier: Modifier = Modifier
-) {
-    val screens = listOf(
-        Screens.HomeScreen, Screens.PreviousQuestionsScreen
-    )
-
-    NavigationBar(
-        modifier = modifier,
-        containerColor = Color.LightGray,
-    ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-
-        screens.forEach { screen ->
-
-            NavigationBarItem(
-                label = {
-                    Text(text = screen.title!!)
-                },
-                icon = {
-                    Icon(imageVector = screen.icon!!, contentDescription = "")
-                },
-                selected = currentRoute == screen.route,
-                onClick = {
-                    navController.navigate(screen.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                colors = NavigationBarItemDefaults.colors(
-                    unselectedTextColor = Color.Gray, selectedTextColor = Color.White
-                ),
-            )
-        }
-    }
-}
 
