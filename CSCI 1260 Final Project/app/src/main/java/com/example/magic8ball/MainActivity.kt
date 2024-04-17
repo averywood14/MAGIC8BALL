@@ -71,6 +71,8 @@ import com.example.magic8ball.compose.BottomBar
 import com.example.magic8ball.compose.Magic8Ball
 import com.example.magic8ball.compose.Magic8BallAnimation
 import com.example.magic8ball.compose.NavigationGraph
+import com.example.magic8ball.compose.ToggleSwitch
+import com.example.magic8ball.compose.UserQuestion
 import com.example.magic8ball.models.Screens
 import com.example.magic8ball.ui.theme.Magic8BallTheme
 import kotlinx.coroutines.Dispatchers
@@ -132,23 +134,10 @@ fun HomeScreen() {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment =  Alignment.CenterVertically
         ) {
-          // Laying out whats inside the row
-            TextField(value = viewModel.responseModel.question,
-                onValueChange = { viewModel.questionAsked(it)},
-                label = { Text(text = "Ask me a Question")},
-                singleLine = true,
-                // Hiding the keybord on done
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()})
-            )
-            // Formatting the Toggle Switch next to the question input
-            Column (horizontalAlignment = Alignment.CenterHorizontally){
-                Switch(checked = toggleSwitch, onCheckedChange = {toggleSwitch = it})
-                Text(text = "Feeling Lucky?", textAlign = TextAlign.Center, color = Color.Black,
-                    modifier = Modifier
-                        .size(64.dp)
-                )
-            }
+            // Calling the UserQuestion Compose function and passing in the user question
+            UserQuestion(text = viewModel.responseModel.question)
+            // Calling the ToggleSwitch Compose Function
+            ToggleSwitch()
         }
         // Creating a Box that contains the magic 8 ball image;
         // This box creates a 3D platform for the Response from the Magic 8 ball,
@@ -159,7 +148,7 @@ fun HomeScreen() {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Calls the Magic 8 Ball Composable - to make the image show up
+            // Calls the Magic 8 Ball Animation Composable - To allows for the image to appear and rotate
             Magic8BallAnimation(
                 modifier = Modifier
                     // Makes the image clickable

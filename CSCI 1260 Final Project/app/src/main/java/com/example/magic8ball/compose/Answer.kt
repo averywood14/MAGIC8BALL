@@ -11,11 +11,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
+// A composable function for the answer from the Magic 8 ball
+// The text is modified within this function
 @Composable
 fun Answer(
     text : String,
     modifier: Modifier = Modifier
 ){
+    // Formatting the text within the magic 8 ball
     Text(
         text = text,
         color = Color.White.copy(alpha = 0.4f),

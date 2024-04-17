@@ -15,12 +15,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.magic8ball.models.Screens
 
+// Composable function that sets up the bottom bar of the page used for navigation.
+// When the icons are clicked for each page it will then navigate to that destination
 // Used this source to create the bottom bar
 // https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
 @Composable
 fun BottomBar(
     navController: NavHostController, state: MutableState<Boolean>, modifier: Modifier = Modifier
 ) {
+    // The screens included within the Bottom Bar
     val screens = listOf(
         Screens.HomeScreen, Screens.PreviousQuestionsScreen
     )
@@ -33,7 +36,7 @@ fun BottomBar(
         val currentRoute = navBackStackEntry?.destination?.route
 
         screens.forEach { screen ->
-
+            // For each screen in the list of screens they will all have a - title, icon, and a route to navigate to
             NavigationBarItem(
                 label = {
                     Text(text = screen.title!!)
@@ -42,6 +45,7 @@ fun BottomBar(
                     Icon(imageVector = screen.icon!!, contentDescription = "")
                 },
                 selected = currentRoute == screen.route,
+                // When the icon is clicked the program will navigate the user to that following screen
                 onClick = {
                     navController.navigate(screen.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
@@ -51,6 +55,7 @@ fun BottomBar(
                         restoreState = true
                     }
                 },
+                // Designing the look of the of navigation items
                 colors = NavigationBarItemDefaults.colors(
                     unselectedTextColor = Color.Gray, selectedTextColor = Color.White
                 ),

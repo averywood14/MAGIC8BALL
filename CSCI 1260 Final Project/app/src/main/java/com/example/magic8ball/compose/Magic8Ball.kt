@@ -21,6 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.magic8ball.R
 
+// Composable function to create the Magic 8 ball image,
+// the sizing is set within this function
 @Composable
 fun Magic8Ball(
    modifier: Modifier = Modifier,

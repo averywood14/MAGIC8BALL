@@ -17,15 +17,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import java.nio.file.WatchEvent
 
+// A Composable function that allows the Magic 8 Ball image to spin/animate,
+// depending on if the user is asking a question or not
+// Used this source to help with animation:
+// https://nascimpact.medium.com/jetpack-compose-working-with-rotation-animation-aeddc5899b28
 @Composable
 fun Magic8BallAnimation(
     modifier: Modifier = Modifier,
     isAsking: Boolean = false
 ){
+    // Variable that holds the current rotation angle
     var currentRotation by remember { mutableStateOf(0f)}
+    // Animates the magic 8 ball - set to current rotation angle
     val rotation = remember { Animatable(currentRotation) }
 
     LaunchedEffect(isAsking) {
+        // If the user is asking the ball rotates infinitely
         if(isAsking) {
             // Rotates infinitely while the user is asking
             rotation.animateTo(
@@ -37,6 +44,7 @@ fun Magic8BallAnimation(
             ){
                 currentRotation = value
             }
+        // If the user is not currently asking the animation is slowed and stopped
         }else {
             if(currentRotation > 0f){
                 // Slows down the rotation
@@ -52,6 +60,7 @@ fun Magic8BallAnimation(
             }
         }
     }
+    // Calls the Magic 8 Ball function and sets the rotationDegrees to the rotation value
     Magic8Ball(
         modifier = modifier
             .padding(24.dp),
