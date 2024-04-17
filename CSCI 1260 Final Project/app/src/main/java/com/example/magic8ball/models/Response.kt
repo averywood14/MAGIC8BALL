@@ -6,16 +6,3 @@ data class Response(
     val sentiment: Sentiment?
 )
 
-data class Sentiment(
-    val score: Int,
-    val comparative: Double,
-    val calculation: List<Calculation>,
-    val tokens: List<String>,
-    val words: List<String>,
-    val positive: List<String>,
-    val negative: List<String>
-)
-
-data class Calculation(
-    val win: Int?
-)

@@ -62,6 +62,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.magic8ball.models.Screens
 import com.example.magic8ball.ui.theme.Magic8BallTheme
 
 
@@ -70,9 +71,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Magic8BallTheme {
-
+                // Used this source to create the bottom bar
+                // https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
                 val navController: NavHostController = rememberNavController()
-
                 val buttonsVisible = remember { mutableStateOf(true) }
 
                 Scaffold(
@@ -94,31 +95,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//@Composable
-//fun Magic8Ball() {
-//    Image(modifier = Modifier.size(100.dp),
-//    painter = painterResource(id = R.drawable.magicball),
-//    contentDescription = null)
-//}
-
-sealed class Screens(
-    val route: String,
-    val title: String? = null,
-    val icon: ImageVector? = null
-) {
-    object HomeScreen : Screens(
-        route = "home_screen",
-        title = "Home",
-        icon = Icons.Outlined.Home
-    )
-
-    object PreviousQuestions : Screens(
-        route = "previousQuestions_screen",
-        title = "Previous Questions",
-        icon = Icons.Outlined.Star
-    )
-}
-
+// Composable Function for the Home Screen Layout
+// Used this source to create the bottom bar
+// https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
 @Composable
 fun HomeScreen() {
     val viewModel : MainActivityViewModel = viewModel()
@@ -126,6 +105,7 @@ fun HomeScreen() {
     var toggleSwitch by remember { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
+    // Formatting the page
     Column( horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
@@ -149,6 +129,7 @@ fun HomeScreen() {
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()})
             )
+            // Formatting the Toggle Switch next to the question input
             Column (horizontalAlignment = Alignment.CenterHorizontally){
                 Switch(checked = toggleSwitch, onCheckedChange = {toggleSwitch = it})
                 Text(text = "Feeling Lucky?", textAlign = TextAlign.Center, color = Color.Black,
@@ -157,7 +138,7 @@ fun HomeScreen() {
                 )
             }
         }
-        Text(text = viewModel.responseModel.response)
+        Text(text = viewModel.responseModel.answer, color = Color.White)
         // Formatting the Magic 8 ball
         Image(
             painter = painterResource(id = R.drawable.magicball),
@@ -166,6 +147,8 @@ fun HomeScreen() {
                 .fillMaxSize()
                 .padding(16.dp)
                 .clickable {
+                    // If the toggle switch is on the question is a biased question;
+                    // If the toggle switch is off the question is a regular question
                     if (toggleSwitch) {
                         viewModel.askBiasedQuestion(question = viewModel.responseModel.question)
                     } else {
@@ -176,12 +159,14 @@ fun HomeScreen() {
     }
 }
 
+// Used this source to create the bottom bar
+// https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
 @Composable
 fun PreviousQuestions() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Magenta)
+            .background(color = Color.LightGray)
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
@@ -194,23 +179,27 @@ fun PreviousQuestions() {
     }
 }
 
+// Used this source to create the bottom bar
+// https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
 @Composable
 fun NavigationGraph(navController: NavHostController) {
     NavHost(navController, startDestination = Screens.HomeScreen.route) {
         composable(Screens.HomeScreen.route) {
             HomeScreen()
         }
-        composable(Screens.PreviousQuestions.route) {
+        composable(Screens.PreviousQuestionsScreen.route) {
             PreviousQuestions()
         }
     }
 }
+// Used this source to create the bottom bar
+// https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
 @Composable
 fun BottomBar(
     navController: NavHostController, state: MutableState<Boolean>, modifier: Modifier = Modifier
 ) {
     val screens = listOf(
-        Screens.HomeScreen, Screens.PreviousQuestions
+        Screens.HomeScreen, Screens.PreviousQuestionsScreen
     )
 
     NavigationBar(
@@ -245,48 +234,5 @@ fun BottomBar(
             )
         }
     }
-
 }
 
-
-
-
-
-//Magic8BallTheme {
-//    // A surface container using the 'background' color from the theme
-//    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-//        // Alligns everything in a column within the page
-//        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//            Spacer(modifier = Modifier.height(64.dp))
-//            Magic8Ball()
-//            // Add some spacing above the button
-//            Spacer(modifier = Modifier.height(32.dp))
-//            // Ask Magic 8 Ball Button
-//            Button(onClick = { viewModel.askQuestion() }) {
-//                Magic8Ball()
-//            }
-//            // Adding space
-//            Spacer(modifier = Modifier.height(32.dp))
-//            // Creating a button for the user that calls the response model when pushed
-//            Button(onClick = { viewModel.askBiasedQuestion(question = viewModel.responseModel.question)}) {
-//                Text(text = "I'm Feeling Lucky!")
-//
-//            }
-//            // Add some spacing below the button
-//            Spacer(modifier = Modifier.height(64.dp))
-//
-//            // Used Stack Overflow for help to hide the keyboard
-//            // https://stackoverflow.com/questions/59133100/how-to-close-the-virtual-keyboard-from-a-jetpack-compose-textfield/66259111#66259111
-//            val keyboardController = LocalSoftwareKeyboardController.current
-//            // A text box for the user to enter their question for the magic 8 ball
-//            TextField(value = viewModel.responseModel.question, onValueChange = { viewModel.questionAsked(it)},  keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-//                keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
-//            )
-//
-//            // Adding space in between the text boxes
-//            Spacer(modifier = Modifier.height(30.dp))
-//            // A Text box that shows the magic 8 balls response
-//            TextField(value = viewModel.responseModel.response, onValueChange = { /*TODO*/ }, enabled = false)
-//        }
-//    }
-//}
