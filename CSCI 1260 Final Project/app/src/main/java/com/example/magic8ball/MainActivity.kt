@@ -69,9 +69,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.magic8ball.compose.Answer
 import com.example.magic8ball.compose.BottomBar
 import com.example.magic8ball.compose.Magic8Ball
+import com.example.magic8ball.compose.Magic8BallAnimation
 import com.example.magic8ball.compose.NavigationGraph
 import com.example.magic8ball.models.Screens
 import com.example.magic8ball.ui.theme.Magic8BallTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
@@ -110,7 +115,8 @@ fun HomeScreen() {
     val viewModel : MainActivityViewModel = viewModel()
     var toggleSwitch by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
-    
+    var isAsking by remember { mutableStateOf(false) }
+
     // Formatting the page
     Column( horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -153,19 +159,26 @@ fun HomeScreen() {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Magic8Ball(
+            // Calls the Magic 8 Ball Composable - to make the image show up
+            Magic8BallAnimation(
                 modifier = Modifier
                     // Makes the image clickable
                     .clickable {
-                        // If the toggle switch is on the question is a biased question;
-                        // If the toggle switch is off the question is a regular question
-                        if (toggleSwitch) {
-                            viewModel.askBiasedQuestion(question = viewModel.responseModel.question)
-                        } else {
-                            viewModel.askQuestion()
-                        }
+                        GlobalScope.launch(Dispatchers.Main) {
+                            isAsking = true
+                            // If the toggle switch is on the question is a biased question;
+                            // If the toggle switch is off the question is a regular question
+                            if (toggleSwitch) {
+                                viewModel.askBiasedQuestion(question = viewModel.responseModel.question)
+                            } else {
+                                viewModel.askQuestion()
+                            }
+                            delay(5000)
+                            isAsking = false
                     }
+                }, isAsking = isAsking
             )
+            // Calls the Answer Composable - to show up the Answer from the Magic 8 Ball
             Answer(
                 text = viewModel.responseModel.answer,
                 modifier = Modifier
@@ -181,6 +194,7 @@ fun HomeScreen() {
 // https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
 @Composable
 fun PreviousQuestions() {
+    // Formatting the Page
     Column(
         modifier = Modifier
             .fillMaxSize()

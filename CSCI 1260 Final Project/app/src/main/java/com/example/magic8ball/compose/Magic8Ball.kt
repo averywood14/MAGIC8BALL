@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -22,7 +23,8 @@ import com.example.magic8ball.R
 
 @Composable
 fun Magic8Ball(
-   modifier: Modifier = Modifier
+   modifier: Modifier = Modifier,
+   rotationDegrees : Float = 0f
 ){
     // Formatting the Magic 8 ball
     Image(
@@ -33,6 +35,7 @@ fun Magic8Ball(
             // Fixing the sizing of the magic 8 ball
             .fillMaxSize()
             .padding(16.dp)
+            .rotate(rotationDegrees)
 
     )
 }
