@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -52,6 +55,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
@@ -62,7 +66,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.magic8ball.compose.Answer
 import com.example.magic8ball.compose.BottomBar
+import com.example.magic8ball.compose.Magic8Ball
 import com.example.magic8ball.compose.NavigationGraph
 import com.example.magic8ball.models.Screens
 import com.example.magic8ball.ui.theme.Magic8BallTheme
@@ -96,17 +102,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-// Composable Function for the Home Screen Layout
+// Composable Function for the Home Screen Layout and functionality
 // Used this source to create the bottom bar
 // https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
 @Composable
 fun HomeScreen() {
     val viewModel : MainActivityViewModel = viewModel()
-
     var toggleSwitch by remember { mutableStateOf(false) }
-
     val focusManager = LocalFocusManager.current
+    
     // Formatting the page
     Column( horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -140,27 +144,39 @@ fun HomeScreen() {
                 )
             }
         }
-        Text(text = viewModel.responseModel.answer, color = Color.White)
-        // Formatting the Magic 8 ball
-        Image(
-            painter = painterResource(id = R.drawable.magicball),
-            contentDescription = null,
+        // Creating a Box that contains the magic 8 ball image;
+        // This box creates a 3D platform for the Response from the Magic 8 ball,
+        // To sit on top of the image
+        Box (
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .clickable {
-                    // If the toggle switch is on the question is a biased question;
-                    // If the toggle switch is off the question is a regular question
-                    if (toggleSwitch) {
-                        viewModel.askBiasedQuestion(question = viewModel.responseModel.question)
-                    } else {
-                        viewModel.askQuestion()
+        ) {
+            Magic8Ball(
+                modifier = Modifier
+                    // Makes the image clickable
+                    .clickable {
+                        // If the toggle switch is on the question is a biased question;
+                        // If the toggle switch is off the question is a regular question
+                        if (toggleSwitch) {
+                            viewModel.askBiasedQuestion(question = viewModel.responseModel.question)
+                        } else {
+                            viewModel.askQuestion()
+                        }
                     }
-                }
-        )
+            )
+            Answer(
+                text = viewModel.responseModel.answer,
+                modifier = Modifier
+                    .offset(x = (-8).dp, y = (-8).dp)
+                    .width(66.dp)
+                    .sizeIn(maxHeight = 110.dp)
+            )
+        }    
     }
 }
-
+// Composable function for the Previous Screen layout and functionality
 // Used this source to create the bottom bar
 // https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
 @Composable
