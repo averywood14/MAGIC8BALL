@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -53,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -123,7 +125,7 @@ fun HomeScreen() {
     val focusManager = LocalFocusManager.current
     val isAsking by viewModel.isAsking.collectAsState(initial = false)
     val scope = rememberCoroutineScope()
-    
+
     fun submitQuestion(){
         if(!isAsking && viewModel.responseModel.question.isNotEmpty()) {
             // If the toggle switch is on the question is a biased question;
@@ -197,6 +199,22 @@ fun HomeScreen() {
 // https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
 @Composable
 fun PreviousQuestions() {
+
+    val viewModel : PreviousQuestionsViewModel = viewModel()
+    val context = LocalContext.current
+    val qAndAStack = viewModel.loadQandAFromFile(context, "q_and_a.json")
+
+    LazyColumn {
+        items(qAndAStack.size) {
+            val qAndA = qAndAStack.pop()
+            Text(
+                text = "Q: ${qAndA.question}\nA: ${qAndA.answer}",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.White,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
     // Formatting the Page
     Column(
         modifier = Modifier
