@@ -134,10 +134,10 @@ fun HomeScreen() {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment =  Alignment.CenterVertically
         ) {
-            // Calling the UserQuestion Compose function and passing in the user question
-            UserQuestion(text = viewModel.responseModel.question)
-            // Calling the ToggleSwitch Compose Function
-            ToggleSwitch()
+            // Calling the UserQuestion Compose function and setting the view model to the updated view model
+            UserQuestion(viewModel = viewModel)
+            // Calling the ToggleSwitch Compose Function and setting the view model to the updated view model
+            ToggleSwitch(viewModel = viewModel)
         }
         // Creating a Box that contains the magic 8 ball image;
         // This box creates a 3D platform for the Response from the Magic 8 ball,
@@ -167,9 +167,10 @@ fun HomeScreen() {
                     }
                 }, isAsking = isAsking
             )
-            // Calls the Answer Composable - to show up the Answer from the Magic 8 Ball
+            // Calls the Answer Composable - to show the Answer from the Magic 8 Ball
             Answer(
                 text = viewModel.responseModel.answer,
+                // Formatting the text for the response from the Magic 8 ball
                 modifier = Modifier
                     .offset(x = (-8).dp, y = (-8).dp)
                     .width(66.dp)
@@ -190,6 +191,7 @@ fun PreviousQuestions() {
             .background(color = Color.LightGray)
             .wrapContentSize(Alignment.Center)
     ) {
+        // Formatting the Text on the scren
         Text(
             text = "Previous Questions",
             style = MaterialTheme.typography.titleLarge,

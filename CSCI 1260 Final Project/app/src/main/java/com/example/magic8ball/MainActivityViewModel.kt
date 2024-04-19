@@ -12,6 +12,7 @@ import kotlin.random.Random
 
 class MainActivityViewModel : ViewModel() {
     var responseModel by mutableStateOf(QandA())
+    var feelingLucky by mutableStateOf(false)
     fun askQuestion() {
         viewModelScope.launch {
             val response = EightBallAPIInstance.api.askQuestion()
@@ -26,7 +27,6 @@ class MainActivityViewModel : ViewModel() {
             responseModel = responseModel.copy(answer = response.reading)
         }
     }
-
     fun questionAsked(question: String){
         responseModel = responseModel.copy(question = question)
     }

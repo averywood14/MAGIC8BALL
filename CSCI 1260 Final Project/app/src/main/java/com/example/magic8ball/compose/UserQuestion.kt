@@ -15,14 +15,14 @@ import com.example.magic8ball.MainActivityViewModel
 // Hides the keyboard once the user is done asking their question
 @Composable
 fun UserQuestion(
-    text: String,
+    // Passing in the entire view model
+    viewModel: MainActivityViewModel
 ){
-    val viewModel : MainActivityViewModel = viewModel()
     val focusManager = LocalFocusManager.current
 
     // Laying out whats inside the row
     TextField(value = viewModel.responseModel.question,
-        onValueChange = { viewModel.questionAsked(it)},
+        onValueChange = {viewModel.questionAsked(it)},
         label = { Text(text = "Ask me a Question") },
         singleLine = true,
         // Hiding the keybord on done
