@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,6 +50,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -125,6 +127,10 @@ fun HomeScreen() {
             .fillMaxSize()
             .background(color = Color.LightGray)
             .wrapContentSize(Alignment.Center)
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {focusManager.clearFocus()})
+            }
+
     ) {
         Row(
             // Defining what the row is going to look like
@@ -153,6 +159,7 @@ fun HomeScreen() {
                 modifier = Modifier
                     // Makes the image clickable
                     .clickable {
+                        focusManager.clearFocus()
                         GlobalScope.launch(Dispatchers.Main) {
                             isAsking = true
                             // If the toggle switch is on the question is a biased question;
