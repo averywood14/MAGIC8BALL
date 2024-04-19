@@ -16,7 +16,8 @@ import com.example.magic8ball.MainActivityViewModel
 @Composable
 fun UserQuestion(
     // Passing in the entire view model
-    viewModel: MainActivityViewModel
+    viewModel: MainActivityViewModel,
+    onDoneAction: () -> Unit
 ){
     val focusManager = LocalFocusManager.current
 
@@ -27,6 +28,9 @@ fun UserQuestion(
         singleLine = true,
         // Hiding the keybord on done
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = {focusManager.clearFocus()})
+        keyboardActions = KeyboardActions(onDone = {
+            focusManager.clearFocus()
+            onDoneAction()
+        })
     )
 }

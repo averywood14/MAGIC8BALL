@@ -45,6 +45,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -121,7 +122,19 @@ fun HomeScreen() {
     val viewModel : MainActivityViewModel = viewModel()
     val focusManager = LocalFocusManager.current
     val isAsking by viewModel.isAsking.collectAsState(initial = false)
-
+    val scope = rememberCoroutineScope()
+    
+    fun submitQuestion(){
+        if(!isAsking && viewModel.responseModel.question.isNotEmpty()) {
+            // If the toggle switch is on the question is a biased question;
+            // If the toggle switch is off the question is a regular question
+            if (viewModel.feelingLucky) {
+                viewModel.askBiasedQuestion(question = viewModel.responseModel.question)
+            } else {
+                viewModel.askQuestion()
+            }
+        }
+    }
     // Formatting the page
     Column( horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -142,7 +155,9 @@ fun HomeScreen() {
             verticalAlignment =  Alignment.CenterVertically
         ) {
             // Calling the UserQuestion Compose function and setting the view model to the updated view model
-            UserQuestion(viewModel = viewModel)
+            UserQuestion(viewModel = viewModel){
+                scope.launch { submitQuestion() }
+            }
             // Calling the ToggleSwitch Compose Function and setting the view model to the updated view model
             ToggleSwitch(viewModel = viewModel)
         }
@@ -161,15 +176,7 @@ fun HomeScreen() {
                     // Makes the image clickable
                     .clickable {
                         focusManager.clearFocus()
-                        if(!isAsking && viewModel.responseModel.question.isNotEmpty()) {
-                            // If the toggle switch is on the question is a biased question;
-                            // If the toggle switch is off the question is a regular question
-                            if (viewModel.feelingLucky) {
-                                viewModel.askBiasedQuestion(question = viewModel.responseModel.question)
-                            } else {
-                                viewModel.askQuestion()
-                            }
-                        }
+                        scope.launch{ submitQuestion() }
                 }, isAsking = isAsking
             )
             // Calls the Answer Composable - to show the Answer from the Magic 8 Ball
