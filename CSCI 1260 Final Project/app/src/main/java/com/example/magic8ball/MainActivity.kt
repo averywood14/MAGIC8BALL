@@ -41,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,6 +70,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.magic8ball.compose.Answer
+import com.example.magic8ball.compose.AnswerAnimation
 import com.example.magic8ball.compose.BottomBar
 import com.example.magic8ball.compose.Magic8Ball
 import com.example.magic8ball.compose.Magic8BallAnimation
@@ -117,9 +119,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun HomeScreen() {
     val viewModel : MainActivityViewModel = viewModel()
-    var toggleSwitch by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
-    var isAsking by remember { mutableStateOf(false) }
+    val isAsking by viewModel.isAsking.collectAsState(initial = false)
 
     // Formatting the page
     Column( horizontalAlignment = Alignment.CenterHorizontally,
@@ -128,7 +129,7 @@ fun HomeScreen() {
             .background(color = Color.LightGray)
             .wrapContentSize(Alignment.Center)
             .pointerInput(Unit) {
-                detectTapGestures(onTap = {focusManager.clearFocus()})
+                detectTapGestures(onTap = { focusManager.clearFocus() })
             }
 
     ) {
@@ -160,22 +161,20 @@ fun HomeScreen() {
                     // Makes the image clickable
                     .clickable {
                         focusManager.clearFocus()
-                        GlobalScope.launch(Dispatchers.Main) {
-                            isAsking = true
+                        if(!isAsking && viewModel.responseModel.question.isNotEmpty()) {
                             // If the toggle switch is on the question is a biased question;
                             // If the toggle switch is off the question is a regular question
-                            if (toggleSwitch) {
+                            if (viewModel.feelingLucky) {
                                 viewModel.askBiasedQuestion(question = viewModel.responseModel.question)
                             } else {
                                 viewModel.askQuestion()
                             }
-                            delay(5000)
-                            isAsking = false
-                    }
+                        }
                 }, isAsking = isAsking
             )
             // Calls the Answer Composable - to show the Answer from the Magic 8 Ball
-            Answer(
+            AnswerAnimation(
+                isAsking = isAsking,
                 text = viewModel.responseModel.answer,
                 // Formatting the text for the response from the Magic 8 ball
                 modifier = Modifier

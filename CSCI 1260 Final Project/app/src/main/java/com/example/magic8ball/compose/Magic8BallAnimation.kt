@@ -49,7 +49,7 @@ fun Magic8BallAnimation(
             if(currentRotation > 0f){
                 // Slows down the rotation
                 rotation.animateTo(
-                    targetValue = currentRotation + 50,
+                    targetValue = 360f,
                     animationSpec =  tween(
                         durationMillis =  1250,
                         easing = LinearOutSlowInEasing
