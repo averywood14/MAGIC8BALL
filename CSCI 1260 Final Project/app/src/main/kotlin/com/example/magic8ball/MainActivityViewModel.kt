@@ -61,7 +61,7 @@ class MainActivityViewModel : ViewModel() {
 
     // Saves QandA object to the files directory
     // Loads existing QandA's from the file and handles errors
-    // Appends the new qanda to the current list and updates the file
+    // Appends the new QandA to the current list and updates the file
     fun saveQandAToFile(context: Context, qandA: QandA){
         val file = File(context.filesDir, Constants.fileName)
         val gson = Gson()

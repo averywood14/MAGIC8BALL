@@ -26,7 +26,7 @@ fun UserQuestion(
         onValueChange = {viewModel.questionAsked(it)},
         label = { Text(text = "Ask me a Question") },
         singleLine = true,
-        // Hiding the keybord on done
+        // Hiding the keyboard on done
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(onDone = {
             focusManager.clearFocus()

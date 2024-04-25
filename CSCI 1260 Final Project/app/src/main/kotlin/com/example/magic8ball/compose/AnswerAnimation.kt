@@ -23,7 +23,7 @@ fun AnswerAnimation(
     val opacity = remember { Animatable(currentOpacity)}
 
     LaunchedEffect(isAsking) {
-        // if the isAsking boolean is true the response will ease in and out, altering the opacity
+        // If the isAsking boolean is true the response fade out out - getting the opacity to 0 (not visible)
         if(isAsking){
             opacity.animateTo(
                 targetValue = 0.0f,
