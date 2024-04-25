@@ -28,6 +28,7 @@ fun BottomBar(
         Screens.HomeScreen, Screens.PreviousQuestionsScreen
     )
 
+    // Creating the Navigation Bar and outlining how it is supposed to look
     NavigationBar(
         modifier = modifier,
         containerColor = Color.LightGray,

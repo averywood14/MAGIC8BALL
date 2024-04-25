@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.magic8ball.HomeScreen
-import com.example.magic8ball.PreviousQuestions
+import com.example.magic8ball.compose.screens.PreviousQuestionsScreen
 import com.example.magic8ball.models.Screens
 
 // Composable function that sets up the navigation of the application,
@@ -22,7 +22,7 @@ fun NavigationGraph(navController: NavHostController) {
         }
         // Creating the PreviousQuestions Screen
         composable(Screens.PreviousQuestionsScreen.route) {
-            PreviousQuestions()
+            PreviousQuestionsScreen()
         }
     }
 }
